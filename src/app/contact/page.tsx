@@ -6,9 +6,15 @@ export default function ContactPage() {
     <PageShell>
       <Container>
         <Section title="상담 안내">
-          <p>
-            학생의 현재 성적과 목표 대학에 따라 맞춤형 전략을 상담합니다. 상담은
-            예약제로 진행됩니다.
+          <p className="max-w-2xl text-zinc-700">
+            학생의 현재 성적, 실기 경험, 목표 대학을 바탕으로
+            <br />
+            <span className="font-medium text-zinc-900">
+              합격 가능성과 전략 방향을 분석
+            </span>
+            하는 상담입니다.
+            <br />
+            상담은 <strong>예약제</strong>로 진행됩니다.
           </p>
 
           <div className="mt-6 flex flex-wrap gap-3">
@@ -20,7 +26,7 @@ export default function ContactPage() {
             </a>
 
             <a
-              href="https://forms.gle/"
+              href="https://docs.google.com/forms/d/e/1FAIpQLSc1Gv5oufwEIX3OuaLCA0_CXxY7QkM_Yq9pRW3L1crnWtRqYw/viewform?usp=dialog"
               target="_blank"
               rel="noreferrer"
               className="rounded-xl border border-zinc-300 px-5 py-3 text-sm font-medium text-zinc-900 hover:bg-zinc-50"
@@ -28,10 +34,6 @@ export default function ContactPage() {
               상담 신청 폼 열기
             </a>
           </div>
-
-          <p className="mt-3 text-xs text-zinc-500">
-            ※ 위 링크를 실제 구글폼/네이버폼 주소로 교체해줘.
-          </p>
         </Section>
 
         <Divider />
