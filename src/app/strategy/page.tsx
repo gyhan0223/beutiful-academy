@@ -29,7 +29,7 @@ export default function StrategyPage() {
       {/* Explanation Section */}
       <div className="bg-white py-12">
         <Container>
-          <Section>
+          <Section title="">
             <p className="mt-8">
               최상위권 미대 입시는 ‘실기 싸움’이 아닙니다. 이미 1차에서 당락이
               결정되는 구조입니다.
