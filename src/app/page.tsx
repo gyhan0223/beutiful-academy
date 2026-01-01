@@ -6,16 +6,6 @@ import { Container, Divider, Section } from "@/components/UI";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
-/** ✅ 강의실은 캐러셀 유지(원하면) */
-const classImages = [
-  "/facility-class-01.jpg",
-  "/facility-class-02.jpg",
-  "/facility-class-03.jpg",
-  "/facility-class-04.jpg",
-  "/facility-class-05.jpg",
-  "/facility-class-06.jpg",
-];
-
 /** ✅ 원본 보기(라이트박스) */
 function Lightbox({
   open,
@@ -137,96 +127,6 @@ function Lightbox({
         </div>
       </div>
     </div>
-  );
-}
-
-/** ✅ 강의실 캐러셀 (원하면 유지) */
-function FacilityCarousel({
-  images,
-  altPrefix,
-}: {
-  images: string[];
-  altPrefix: string;
-}) {
-  const [idx, setIdx] = useState(0);
-  const [open, setOpen] = useState(false);
-
-  const prev = () => setIdx((v) => (v - 1 + images.length) % images.length);
-  const next = () => setIdx((v) => (v + 1) % images.length);
-
-  return (
-    <>
-      <div className="relative h-[420px] sm:h-[520px] w-full overflow-hidden bg-zinc-100">
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          className="absolute inset-0 z-10 cursor-zoom-in"
-          aria-label="원본 이미지로 보기"
-        />
-
-        <Image
-          src={images[idx]}
-          alt={`${altPrefix} ${idx + 1}`}
-          fill
-          className="object-contain"
-          sizes="(max-width: 1024px) 100vw, 50vw"
-          priority={idx === 0}
-        />
-
-        {images.length > 1 && (
-          <>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                prev();
-              }}
-              className="absolute left-4 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/40 px-3 py-2 text-sm font-semibold text-white backdrop-blur hover:bg-black/55"
-              aria-label="이전 이미지"
-            >
-              ←
-            </button>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                next();
-              }}
-              className="absolute right-4 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/40 px-3 py-2 text-sm font-semibold text-white backdrop-blur hover:bg-black/55"
-              aria-label="다음 이미지"
-            >
-              →
-            </button>
-          </>
-        )}
-
-        {images.length > 1 && (
-          <div className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 gap-2">
-            {images.map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIdx(i);
-                }}
-                className={`h-2.5 w-2.5 rounded-full transition ${
-                  i === idx ? "bg-white" : "bg-white/40"
-                }`}
-                aria-label={`${altPrefix} 이미지 ${i + 1}`}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-
-      <Lightbox
-        open={open}
-        images={images}
-        startIndex={idx}
-        onClose={() => setOpen(false)}
-      />
-    </>
   );
 }
 
@@ -364,56 +264,63 @@ export default function Home() {
           </div>
 
           <div className="mt-14">
-            {/* ✅ 1) 자습실 (슬라이더 제거, 1장 임팩트 구조) */}
+            {/* ✅ 1) 자습실 (슬라이더 제거, 높이 딱 맞추기) */}
             <section className="py-14 sm:py-20">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch">
                 {/* Text */}
-                <div className="lg:col-span-5">
-                  <p className="text-xs font-semibold tracking-wider text-zinc-500">
-                    STUDY ROOM
-                  </p>
-                  <h3 className="mt-3 text-3xl sm:text-4xl font-semibold tracking-tight text-zinc-900">
-                    자습은 자유가 아니라, <br className="hidden sm:block" />
-                    관리다.
-                  </h3>
+                <div className="lg:col-span-5 flex flex-col justify-between">
+                  <div>
+                    <p className="text-xs font-semibold tracking-wider text-zinc-500">
+                      STUDY ROOM
+                    </p>
 
-                  <p className="mt-5 text-base sm:text-lg leading-8 text-zinc-700">
-                    좌석·동선·시선까지 “집중이 무너질 여지”를 구조적으로
-                    차단합니다. 자습실도 관리 시스템의 일부로 설계했습니다.
-                  </p>
+                    <h3 className="mt-3 text-3xl sm:text-4xl font-semibold tracking-tight text-zinc-900">
+                      자습은 자유가 아니라,
+                      <br className="hidden sm:block" />
+                      관리다.
+                    </h3>
 
-                  {/* Key points */}
-                  <div className="mt-8 space-y-3">
-                    <div className="flex gap-3">
-                      <div className="mt-1 h-2.5 w-2.5 rounded-full bg-zinc-900" />
-                      <p className="text-sm sm:text-base text-zinc-800">
-                        <span className="font-semibold">
-                          고정 좌석 · 개인 집중 구획
-                        </span>{" "}
-                        (자리 바뀜으로 흐트러지지 않게)
-                      </p>
-                    </div>
-                    <div className="flex gap-3">
-                      <div className="mt-1 h-2.5 w-2.5 rounded-full bg-zinc-900" />
-                      <p className="text-sm sm:text-base text-zinc-800">
-                        <span className="font-semibold">
-                          출결 · 학습 리듬 점검
-                        </span>{" "}
-                        (루틴이 깨지면 바로 조정)
-                      </p>
-                    </div>
-                    <div className="flex gap-3">
-                      <div className="mt-1 h-2.5 w-2.5 rounded-full bg-zinc-900" />
-                      <p className="text-sm sm:text-base text-zinc-800">
-                        <span className="font-semibold">
-                          자습 → 수업 → 복습
-                        </span>{" "}
-                        흐름이 끊기지 않게 연결
-                      </p>
+                    <p className="mt-5 text-base sm:text-lg leading-8 text-zinc-700">
+                      좌석·동선·시선까지 “집중이 무너질 여지”를 구조적으로
+                      차단합니다. 자습실도 관리 시스템의 일부로 설계했습니다.
+                    </p>
+
+                    {/* Key points */}
+                    <div className="mt-8 space-y-3">
+                      <div className="flex gap-3">
+                        <div className="mt-1 h-2.5 w-2.5 rounded-full bg-zinc-900" />
+                        <p className="text-sm sm:text-base text-zinc-800">
+                          <span className="font-semibold">
+                            고정 좌석 · 개인 집중 구획
+                          </span>{" "}
+                          (자리 바뀜으로 흔들리지 않게)
+                        </p>
+                      </div>
+
+                      <div className="flex gap-3">
+                        <div className="mt-1 h-2.5 w-2.5 rounded-full bg-zinc-900" />
+                        <p className="text-sm sm:text-base text-zinc-800">
+                          <span className="font-semibold">
+                            출결 · 학습 리듬 점검
+                          </span>{" "}
+                          (루틴이 깨지면 바로 조정)
+                        </p>
+                      </div>
+
+                      <div className="flex gap-3">
+                        <div className="mt-1 h-2.5 w-2.5 rounded-full bg-zinc-900" />
+                        <p className="text-sm sm:text-base text-zinc-800">
+                          <span className="font-semibold">
+                            자습 → 수업 → 복습
+                          </span>{" "}
+                          흐름이 끊기지 않게 연결
+                        </p>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="mt-9 flex flex-wrap gap-3">
+                  {/* CTA (아래로 내려서 세로 밸런스 맞춤) */}
+                  <div className="mt-10 flex flex-wrap gap-3">
                     <Link
                       href="/dormitory"
                       className="rounded-xl bg-zinc-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800"
@@ -431,54 +338,32 @@ export default function Home() {
 
                 {/* Image */}
                 <div className="lg:col-span-7">
-                  <div className="rounded-3xl bg-zinc-50/60 p-3 sm:p-4 ring-1 ring-zinc-200/70">
-                    <div className="relative overflow-hidden rounded-2xl">
-                      <div className="relative aspect-[16/9] sm:aspect-[21/10] max-h-[520px] bg-zinc-100">
-                        <button
-                          type="button"
-                          onClick={() => openSingle("/facility-study-01.jpg")}
-                          className="absolute inset-0 z-20 cursor-zoom-in"
-                          aria-label="원본 이미지로 보기"
-                        />
-
-                        {/* 배경: 같은 이미지 블러로 채우기 */}
-                        <Image
-                          src="/facility-study-01.jpg"
-                          alt=""
-                          fill
-                          className="object-cover blur-2xl scale-110 opacity-35"
-                          sizes="(max-width: 1024px) 100vw, 60vw"
-                          priority
-                        />
-
-                        {/* 전경: 안 잘리게 contain */}
-                        <Image
-                          src="/facility-study-01.jpg"
-                          alt="자습실"
-                          fill
-                          className="object-contain p-4 sm:p-6"
-                          sizes="(max-width: 1024px) 100vw, 60vw"
-                          priority
-                        />
-
-                        {/* 가독성 오버레이 */}
-                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-black/0 to-transparent" />
-
-                        {/* 하단 배지 */}
-                        <div className="pointer-events-none absolute bottom-4 left-4 right-4 z-10">
-                          <div className="inline-flex items-center gap-2 rounded-full bg-black/40 px-4 py-2 text-xs sm:text-sm font-medium text-white backdrop-blur">
-                            집중이 무너질 여지를 줄이는 구조 설계
-                          </div>
-                        </div>
-                      </div>
+                  {/* ✅ lg에서 텍스트와 같은 높이로 맞추기 */}
+                  <div className="h-[340px] sm:h-[420px] lg:h-full rounded-3xl bg-white ring-1 ring-zinc-200/70 overflow-hidden">
+                    <div className="relative h-full w-full">
+                      <button
+                        type="button"
+                        onClick={() => openSingle("/facility-study-01.jpg")}
+                        className="absolute inset-0 z-10 cursor-zoom-in"
+                        aria-label="원본 이미지로 보기"
+                      />
+                      {/* ✅ 안 잘리게 contain, 대신 카드 꽉 채우기 */}
+                      <Image
+                        src="/facility-study-01.jpg"
+                        alt="자습실"
+                        fill
+                        className="object-contain p-6 sm:p-8"
+                        sizes="(max-width: 1024px) 100vw, 60vw"
+                        priority
+                      />
                     </div>
-
-                    {/* 캡션 */}
-                    <p className="mt-4 text-xs sm:text-sm text-zinc-600">
-                      * 시설은 “보여주기”가 아니라 “결과를 만들기” 위해
-                      설계합니다.
-                    </p>
                   </div>
+
+                  {/* ✅ 사진 가리지 말고 아래에 캡션 */}
+                  <p className="mt-4 text-xs sm:text-sm text-zinc-600">
+                    * 시설은 “보여주기”가 아니라 “결과를 만들기” 위해
+                    설계합니다.
+                  </p>
                 </div>
               </div>
 
@@ -487,24 +372,105 @@ export default function Home() {
               </div>
             </section>
 
-            {/* 2) 학과 강의실 (원래처럼 슬라이더 유지) */}
-            <section className="py-16 sm:py-24 bg-zinc-50/60">
-              <div className="max-w-3xl">
-                <h3 className="text-2xl sm:text-3xl font-semibold tracking-tight text-zinc-900">
-                  학과 강의실
-                </h3>
-                <p className="mt-4 text-base sm:text-lg leading-8 text-zinc-700">
-                  국어·영어·탐구를 ‘점수로’ 올리는 수업에 맞춰, 수업 몰입과
-                  복습이 이어지게 구성했습니다.
-                </p>
-              </div>
+            {/* 2) 학과 강의실 (슬라이더 제거, 자습실과 톤 통일) */}
+            <section className="py-14 sm:py-20">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch">
+                {/* Text */}
+                <div className="lg:col-span-5 flex flex-col justify-between">
+                  <div>
+                    <p className="text-xs font-semibold tracking-wider text-zinc-500">
+                      CLASS ROOM
+                    </p>
 
-              <div className="mt-10 sm:mt-12 rounded-3xl bg-white/70 p-4 sm:p-6 ring-1 ring-zinc-200/70">
-                <div className="overflow-hidden rounded-2xl">
-                  <FacilityCarousel
-                    images={classImages}
-                    altPrefix="학과 강의실"
-                  />
+                    <h3 className="mt-3 text-3xl sm:text-4xl font-semibold tracking-tight text-zinc-900">
+                      수업은 분위기가 아니라,
+                      <br className="hidden sm:block" />
+                      점수로 증명한다.
+                    </h3>
+
+                    <p className="mt-5 text-base sm:text-lg leading-8 text-zinc-700">
+                      국어·영어·탐구를 “감”이 아니라 “점수”를 올리는 수업에
+                      맞춰, 몰입과 복습이 이어지게 구성했습니다.
+                    </p>
+
+                    {/* Key points */}
+                    <div className="mt-8 space-y-3">
+                      <div className="flex gap-3">
+                        <div className="mt-1 h-2.5 w-2.5 rounded-full bg-zinc-900" />
+                        <p className="text-sm sm:text-base text-zinc-800">
+                          <span className="font-semibold">
+                            실전형 수업 운영
+                          </span>{" "}
+                          (문제 풀이·시간 관리 중심)
+                        </p>
+                      </div>
+
+                      <div className="flex gap-3">
+                        <div className="mt-1 h-2.5 w-2.5 rounded-full bg-zinc-900" />
+                        <p className="text-sm sm:text-base text-zinc-800">
+                          <span className="font-semibold">
+                            수업 → 복습 흐름
+                          </span>
+                          이 끊기지 않게 설계
+                        </p>
+                      </div>
+
+                      <div className="flex gap-3">
+                        <div className="mt-1 h-2.5 w-2.5 rounded-full bg-zinc-900" />
+                        <p className="text-sm sm:text-base text-zinc-800">
+                          <span className="font-semibold">
+                            성적 리포트 기반 피드백
+                          </span>
+                          으로 약점 교정
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* CTA */}
+                  <div className="mt-10 flex flex-wrap gap-3">
+                    <Link
+                      href="/system"
+                      className="rounded-xl bg-zinc-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800"
+                    >
+                      시스템 자세히 보기
+                    </Link>
+                    <Link
+                      href="/contact"
+                      className="rounded-xl border border-zinc-300 px-5 py-3 text-sm font-medium hover:bg-zinc-50"
+                    >
+                      상담 신청
+                    </Link>
+                  </div>
+                </div>
+
+                {/* Image */}
+                <div className="lg:col-span-7">
+                  <div className="h-[340px] sm:h-[420px] lg:h-full rounded-3xl bg-white ring-1 ring-zinc-200/70 overflow-hidden">
+                    <div className="relative h-full w-full">
+                      <button
+                        type="button"
+                        onClick={() => openSingle("/facility-class-01.jpg")}
+                        className="absolute inset-0 z-10 cursor-zoom-in"
+                        aria-label="원본 이미지로 보기"
+                      />
+
+                      {/* ✅ 안 잘리게 contain + 여백(padding) 동일 톤 */}
+                      <Image
+                        src="/facility-class-01.jpg"
+                        alt="학과 강의실"
+                        fill
+                        className="object-contain p-6 sm:p-8"
+                        sizes="(max-width: 1024px) 100vw, 60vw"
+                        priority
+                      />
+                    </div>
+                  </div>
+
+                  <p className="mt-4 text-xs sm:text-sm text-zinc-600">
+                    * 실제 수업 장면을 기준으로 “점수형 학습”에 맞춘 환경을
+                    구성합니다.
+                  </p>
                 </div>
               </div>
 
