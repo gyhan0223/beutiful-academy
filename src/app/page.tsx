@@ -697,8 +697,8 @@ export default function Home() {
                         src="/facility-study-01.jpg"
                         alt="자습실"
                         fill
-                        className="object-contain"
-                        sizes="(max-width: 1024px) 100vw, 60vw"
+                        className="object-cover object-center rounded-2xl"
+                        sizes="(max-width: 1024px) 100vw, 50vw"
                         priority
                       />
                     </div>
@@ -735,8 +735,8 @@ export default function Home() {
                         src="/facility-class-01.jpg"
                         alt="학과 강의실"
                         fill
-                        className="object-contain"
-                        sizes="(max-width: 1024px) 100vw, 60vw"
+                        className="object-contain rounded-2xl"
+                        sizes="(max-width: 1024px) 100vw, 50vw"
                         priority
                       />
                     </div>
@@ -910,8 +910,8 @@ export default function Home() {
                         src="/facility-meal-01.jpg"
                         alt="식사/생활"
                         fill
-                        className="object-cover object-center"
-                        sizes="(max-width: 1024px) 100vw, 60vw"
+                        className="object-cover object-center rounded-2xl"
+                        sizes="(max-width: 1024px) 100vw, 50vw"
                       />
                     </div>
                   </div>
@@ -945,8 +945,8 @@ export default function Home() {
                         src="/facility-dorm02-2.jpg"
                         alt="숙소"
                         fill
-                        className="object-cover object-center"
-                        sizes="(max-width: 1024px) 100vw, 60vw"
+                        className="object-cover object-center rounded-2xl"
+                        sizes="(max-width: 1024px) 100vw, 50vw"
                       />
                     </div>
                   </div>
