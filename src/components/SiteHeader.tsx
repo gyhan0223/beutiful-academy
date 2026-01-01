@@ -7,7 +7,7 @@ const nav = [
   { href: "/about", label: "학원소개" },
   { href: "/system", label: "시스템" },
   { href: "/strategy", label: "합격전략" },
-  { href: "/dormitory", label: "기숙" },
+  { href: "/dormitory", label: "학사관리" },
   { href: "/teachers", label: "강사진" },
   { href: "/contact", label: "상담" },
 ];

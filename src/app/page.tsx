@@ -124,7 +124,7 @@ export default function Home() {
               href="/dormitory"
               className="hidden rounded-xl border border-zinc-300 px-4 py-2 text-sm font-medium hover:bg-zinc-50 sm:inline-flex"
             >
-              기숙/집중관리 보기
+              학사관리 보기
             </Link>
           </div>
 
@@ -133,22 +133,22 @@ export default function Home() {
               {
                 src: "/facility-study01.jpg",
                 title: "자습실",
-                desc: "집중이 유지되는 개인 좌석과 동선",
+                desc: "하루 학습량이 흔들리지 않도록, 집중을 끊지 않는 개인 좌석·동선으로 설계합니다.",
               },
               {
                 src: "/facility-class01.jpg",
                 title: "학과 강의실",
-                desc: "국어·영어·탐구 수업 전용 공간",
+                desc: "국어·영어·탐구를 ‘점수로’ 올리는 수업에 맞춰, 수업 몰입과 복습이 이어지게 구성했습니다.",
               },
               {
                 src: "/facility-meal01.jpg",
                 title: "식사/생활",
-                desc: "학습 루틴이 흔들리지 않게 관리",
+                desc: "컨디션이 무너지면 성적이 먼저 꺾입니다. 식사·생활 리듬까지 관리해 학습 지속력을 만듭니다.",
               },
               {
                 src: "/facility-dorm01.jpg",
-                title: "기숙/숙소",
-                desc: "필요 시 집중 관리 환경 제공",
+                title: "숙소",
+                desc: "집중이 깨지는 변수를 줄여, 공부만 남게 만듭니다. 필요 시 ‘몰입 환경’으로 전환합니다.",
               },
             ].map((x) => (
               <div
