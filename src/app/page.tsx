@@ -4,13 +4,16 @@ import Link from "next/link";
 import PageShell from "@/components/PageShell";
 import { Container, Divider, Section } from "@/components/UI";
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
-const studyImages = [
-  "/facility-study-01.jpg",
-  "/facility-study-02.jpg",
-  "/facility-study-03.jpg",
-  "/facility-study-04.jpg",
+/** ✅ 강의실은 캐러셀 유지(원하면) */
+const classImages = [
+  "/facility-class-01.jpg",
+  "/facility-class-02.jpg",
+  "/facility-class-03.jpg",
+  "/facility-class-04.jpg",
+  "/facility-class-05.jpg",
+  "/facility-class-06.jpg",
 ];
 
 /** ✅ 원본 보기(라이트박스) */
@@ -56,11 +59,9 @@ function Lightbox({
       role="dialog"
       aria-modal="true"
       onMouseDown={(e) => {
-        // 배경 클릭 닫기(이미지/버튼 클릭은 제외)
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      {/* 상단 닫기 */}
       <button
         type="button"
         onClick={onClose}
@@ -70,7 +71,6 @@ function Lightbox({
         ✕
       </button>
 
-      {/* 이미지 영역 */}
       <div className="relative mx-auto h-[100vh] w-full max-w-6xl px-4">
         <div className="relative h-full w-full">
           <Image
@@ -83,7 +83,6 @@ function Lightbox({
           />
         </div>
 
-        {/* 좌우 버튼 */}
         {images.length > 1 && (
           <>
             <button
@@ -112,7 +111,6 @@ function Lightbox({
           </>
         )}
 
-        {/* 하단 인디케이터 */}
         <div className="absolute bottom-6 left-1/2 flex -translate-x-1/2 items-center gap-3">
           <div className="rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white backdrop-blur">
             {idx + 1} / {images.length}
@@ -142,21 +140,23 @@ function Lightbox({
   );
 }
 
-function StudyRoomCarousel({ images }: { images: string[] }) {
+/** ✅ 강의실 캐러셀 (원하면 유지) */
+function FacilityCarousel({
+  images,
+  altPrefix,
+}: {
+  images: string[];
+  altPrefix: string;
+}) {
   const [idx, setIdx] = useState(0);
   const [open, setOpen] = useState(false);
 
   const prev = () => setIdx((v) => (v - 1 + images.length) % images.length);
   const next = () => setIdx((v) => (v + 1) % images.length);
 
-  useEffect(() => {
-    console.log("Current image source:", images[idx]);
-  }, [idx]);
-
   return (
     <>
       <div className="relative h-[420px] sm:h-[520px] w-full overflow-hidden bg-zinc-100">
-        {/* ✅ 클릭하면 원본 라이트박스 */}
         <button
           type="button"
           onClick={() => setOpen(true)}
@@ -166,48 +166,60 @@ function StudyRoomCarousel({ images }: { images: string[] }) {
 
         <Image
           src={images[idx]}
-          alt={`자습실 ${idx + 1}`}
+          alt={`${altPrefix} ${idx + 1}`}
           fill
           className="object-contain"
           sizes="(max-width: 1024px) 100vw, 50vw"
           priority={idx === 0}
         />
 
-        {/* 좌우 버튼 */}
-        <button
-          type="button"
-          onClick={prev}
-          className="absolute left-4 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/40 px-3 py-2 text-sm font-semibold text-white backdrop-blur hover:bg-black/55"
-          aria-label="이전 이미지"
-        >
-          ←
-        </button>
-        <button
-          type="button"
-          onClick={next}
-          className="absolute right-4 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/40 px-3 py-2 text-sm font-semibold text-white backdrop-blur hover:bg-black/55"
-          aria-label="다음 이미지"
-        >
-          →
-        </button>
-
-        {/* 도트 */}
-        <div className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 gap-2">
-          {images.map((_, i) => (
+        {images.length > 1 && (
+          <>
             <button
-              key={i}
               type="button"
-              onClick={() => setIdx(i)}
-              className={`h-2.5 w-2.5 rounded-full transition ${
-                i === idx ? "bg-white" : "bg-white/40"
-              }`}
-              aria-label={`자습실 이미지 ${i + 1}`}
-            />
-          ))}
-        </div>
+              onClick={(e) => {
+                e.stopPropagation();
+                prev();
+              }}
+              className="absolute left-4 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/40 px-3 py-2 text-sm font-semibold text-white backdrop-blur hover:bg-black/55"
+              aria-label="이전 이미지"
+            >
+              ←
+            </button>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                next();
+              }}
+              className="absolute right-4 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/40 px-3 py-2 text-sm font-semibold text-white backdrop-blur hover:bg-black/55"
+              aria-label="다음 이미지"
+            >
+              →
+            </button>
+          </>
+        )}
+
+        {images.length > 1 && (
+          <div className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 gap-2">
+            {images.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIdx(i);
+                }}
+                className={`h-2.5 w-2.5 rounded-full transition ${
+                  i === idx ? "bg-white" : "bg-white/40"
+                }`}
+                aria-label={`${altPrefix} 이미지 ${i + 1}`}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* ✅ 원본 라이트박스 */}
       <Lightbox
         open={open}
         images={images}
@@ -239,7 +251,7 @@ export default function Home() {
           backgroundRepeat: "no-repeat",
         }}
       >
-        <div className="absolute inset-0 -z-10" style={{ opacity: 0.25 }}></div>
+        <div className="absolute inset-0 -z-10" style={{ opacity: 0.25 }} />
 
         <Container>
           <div className="relative z-10 text-left">
@@ -266,7 +278,6 @@ export default function Home() {
               미대 전형을 기준으로 합격 구조를 설계합니다.
             </p>
 
-            {/* CTA */}
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href="/contact"
@@ -333,14 +344,14 @@ export default function Home() {
         <Divider />
 
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
-          {/* 헤더 영역 */}
           <div className="mt-10 sm:mt-14 flex items-end justify-between gap-6">
             <div>
               <h2 className="text-3xl sm:text-4xl font-semibold tracking-tight text-zinc-900">
                 시설 · 학습 환경
               </h2>
               <p className="mt-4 text-lg sm:text-xl leading-8 text-zinc-700">
-                공부가 되는 환경을 만들고, 루틴이 깨지지 않게 관리합니다.
+                시설은 목적이 아니라 결과를 위한 도구입니다. “공부만 남게”
+                만드는 환경을 제공합니다.
               </p>
             </div>
 
@@ -353,79 +364,121 @@ export default function Home() {
           </div>
 
           <div className="mt-14">
-            {/* 1) 자습실 (텍스트 위 + 이미지 아래) */}
+            {/* ✅ 1) 자습실 (슬라이더 제거, 1장 임팩트 구조) */}
             <section className="py-14 sm:py-20">
-              {/* 텍스트 */}
-              <div className="max-w-3xl">
-                <h3 className="text-2xl sm:text-3xl font-semibold tracking-tight text-zinc-900">
-                  자습실
-                </h3>
-                <p className="mt-4 text-base sm:text-lg leading-8 text-zinc-700">
-                  하루 학습량이 흔들리지 않도록, 집중을 끊지 않는 개인
-                  좌석·동선으로 설계합니다.
-                </p>
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+                {/* Text */}
+                <div className="lg:col-span-5">
+                  <p className="text-xs font-semibold tracking-wider text-zinc-500">
+                    STUDY ROOM
+                  </p>
+                  <h3 className="mt-3 text-3xl sm:text-4xl font-semibold tracking-tight text-zinc-900">
+                    자습은 자유가 아니라, <br className="hidden sm:block" />
+                    관리다.
+                  </h3>
 
-                <div className="mt-7 flex flex-wrap gap-3">
-                  <Link
-                    href="/dormitory"
-                    className="rounded-xl bg-zinc-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800"
-                  >
-                    관리 시스템 보기
-                  </Link>
-                  <Link
-                    href="/contact"
-                    className="rounded-xl border border-zinc-300 px-5 py-3 text-sm font-medium hover:bg-zinc-50"
-                  >
-                    상담 신청
-                  </Link>
-                </div>
-              </div>
+                  <p className="mt-5 text-base sm:text-lg leading-8 text-zinc-700">
+                    좌석·동선·시선까지 “집중이 무너질 여지”를 구조적으로
+                    차단합니다. 자습실도 관리 시스템의 일부로 설계했습니다.
+                  </p>
 
-              {/* 이미지(아래) - 섹션감 있는 연한 배경 */}
-              <div className="mt-10 sm:mt-12 rounded-3xl bg-zinc-50/70 p-4 sm:p-6 ring-1 ring-zinc-200/70">
-                <div className="overflow-hidden rounded-2xl">
-                  <StudyRoomCarousel images={studyImages} />
-                </div>
-              </div>
-
-              <div className="mt-14">
-                <Divider />
-              </div>
-            </section>
-
-            {/* 2) 학과 강의실 (반전: 이미지-텍스트) */}
-            <section className="py-16 sm:py-24 bg-zinc-50/60">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
-                {/* 이미지가 왼쪽으로 */}
-                <div className="relative min-h-[340px] sm:min-h-[520px] order-2 lg:order-1">
-                  <div className="overflow-hidden rounded-2xl">
-                    <div className="relative h-full w-full">
-                      <button
-                        type="button"
-                        onClick={() => openSingle("/facility-class01.jpg")}
-                        className="absolute inset-0 z-10 cursor-zoom-in"
-                        aria-label="원본 이미지로 보기"
-                      />
-                      <Image
-                        src="/facility-class01.jpg"
-                        alt="학과 강의실"
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 1024px) 100vw, 50vw"
-                      />
+                  {/* Key points */}
+                  <div className="mt-8 space-y-3">
+                    <div className="flex gap-3">
+                      <div className="mt-1 h-2.5 w-2.5 rounded-full bg-zinc-900" />
+                      <p className="text-sm sm:text-base text-zinc-800">
+                        <span className="font-semibold">
+                          고정 좌석 · 개인 집중 구획
+                        </span>{" "}
+                        (자리 바뀜으로 흐트러지지 않게)
+                      </p>
                     </div>
+                    <div className="flex gap-3">
+                      <div className="mt-1 h-2.5 w-2.5 rounded-full bg-zinc-900" />
+                      <p className="text-sm sm:text-base text-zinc-800">
+                        <span className="font-semibold">
+                          출결 · 학습 리듬 점검
+                        </span>{" "}
+                        (루틴이 깨지면 바로 조정)
+                      </p>
+                    </div>
+                    <div className="flex gap-3">
+                      <div className="mt-1 h-2.5 w-2.5 rounded-full bg-zinc-900" />
+                      <p className="text-sm sm:text-base text-zinc-800">
+                        <span className="font-semibold">
+                          자습 → 수업 → 복습
+                        </span>{" "}
+                        흐름이 끊기지 않게 연결
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="mt-9 flex flex-wrap gap-3">
+                    <Link
+                      href="/dormitory"
+                      className="rounded-xl bg-zinc-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800"
+                    >
+                      관리 시스템 보기
+                    </Link>
+                    <Link
+                      href="/contact"
+                      className="rounded-xl border border-zinc-300 px-5 py-3 text-sm font-medium hover:bg-zinc-50"
+                    >
+                      상담 신청
+                    </Link>
                   </div>
                 </div>
 
-                {/* 텍스트가 오른쪽으로 */}
-                <div className="pt-1 order-1 lg:order-2">
-                  <h3 className="text-2xl sm:text-3xl font-semibold tracking-tight text-zinc-900">
-                    학과 강의실
-                  </h3>
-                  <p className="mt-4 text-base sm:text-lg leading-8 text-zinc-700 max-w-xl">
-                    국어·영어·탐구를 ‘점수로’ 올리는 수업에 맞춰, 수업 몰입과
-                    복습이 이어지게 구성했습니다.
-                  </p>
+                {/* Image */}
+                <div className="lg:col-span-7">
+                  <div className="rounded-3xl bg-zinc-50/60 p-3 sm:p-4 ring-1 ring-zinc-200/70">
+                    <div className="relative overflow-hidden rounded-2xl">
+                      <div className="relative aspect-[16/9] sm:aspect-[21/10] max-h-[520px] bg-zinc-100">
+                        <button
+                          type="button"
+                          onClick={() => openSingle("/facility-study-01.jpg")}
+                          className="absolute inset-0 z-20 cursor-zoom-in"
+                          aria-label="원본 이미지로 보기"
+                        />
+
+                        {/* 배경: 같은 이미지 블러로 채우기 */}
+                        <Image
+                          src="/facility-study-01.jpg"
+                          alt=""
+                          fill
+                          className="object-cover blur-2xl scale-110 opacity-35"
+                          sizes="(max-width: 1024px) 100vw, 60vw"
+                          priority
+                        />
+
+                        {/* 전경: 안 잘리게 contain */}
+                        <Image
+                          src="/facility-study-01.jpg"
+                          alt="자습실"
+                          fill
+                          className="object-contain p-4 sm:p-6"
+                          sizes="(max-width: 1024px) 100vw, 60vw"
+                          priority
+                        />
+
+                        {/* 가독성 오버레이 */}
+                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/35 via-black/0 to-transparent" />
+
+                        {/* 하단 배지 */}
+                        <div className="pointer-events-none absolute bottom-4 left-4 right-4 z-10">
+                          <div className="inline-flex items-center gap-2 rounded-full bg-black/40 px-4 py-2 text-xs sm:text-sm font-medium text-white backdrop-blur">
+                            집중이 무너질 여지를 줄이는 구조 설계
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 캡션 */}
+                    <p className="mt-4 text-xs sm:text-sm text-zinc-600">
+                      * 시설은 “보여주기”가 아니라 “결과를 만들기” 위해
+                      설계합니다.
+                    </p>
+                  </div>
                 </div>
               </div>
 
@@ -433,6 +486,33 @@ export default function Home() {
                 <Divider />
               </div>
             </section>
+
+            {/* 2) 학과 강의실 (원래처럼 슬라이더 유지) */}
+            <section className="py-16 sm:py-24 bg-zinc-50/60">
+              <div className="max-w-3xl">
+                <h3 className="text-2xl sm:text-3xl font-semibold tracking-tight text-zinc-900">
+                  학과 강의실
+                </h3>
+                <p className="mt-4 text-base sm:text-lg leading-8 text-zinc-700">
+                  국어·영어·탐구를 ‘점수로’ 올리는 수업에 맞춰, 수업 몰입과
+                  복습이 이어지게 구성했습니다.
+                </p>
+              </div>
+
+              <div className="mt-10 sm:mt-12 rounded-3xl bg-white/70 p-4 sm:p-6 ring-1 ring-zinc-200/70">
+                <div className="overflow-hidden rounded-2xl">
+                  <FacilityCarousel
+                    images={classImages}
+                    altPrefix="학과 강의실"
+                  />
+                </div>
+              </div>
+
+              <div className="mt-14">
+                <Divider />
+              </div>
+            </section>
+
             {/* 3) 식사/생활 (정방향: 텍스트-이미지) */}
             <section className="py-14 sm:py-20">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
@@ -471,10 +551,10 @@ export default function Home() {
                 <Divider />
               </div>
             </section>
+
             {/* 4) 숙소 (반전: 이미지-텍스트) */}
             <section className="py-16 sm:py-24 bg-zinc-50/60">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
-                {/* 이미지가 왼쪽으로 */}
                 <div className="relative min-h-[340px] sm:min-h-[520px] order-2 lg:order-1">
                   <div className="overflow-hidden rounded-2xl">
                     <div className="relative h-full w-full">
@@ -495,7 +575,6 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* 텍스트가 오른쪽으로 */}
                 <div className="pt-1 order-1 lg:order-2">
                   <h3 className="text-2xl sm:text-3xl font-semibold tracking-tight text-zinc-900">
                     숙소
