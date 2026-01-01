@@ -149,9 +149,13 @@ function StudyRoomCarousel({ images }: { images: string[] }) {
   const prev = () => setIdx((v) => (v - 1 + images.length) % images.length);
   const next = () => setIdx((v) => (v + 1) % images.length);
 
+  useEffect(() => {
+    console.log("Current image source:", images[idx]);
+  }, [idx]);
+
   return (
     <>
-      <div className="relative h-full w-full overflow-hidden">
+      <div className="relative h-[420px] sm:h-[520px] w-full overflow-hidden bg-zinc-100">
         {/* ✅ 클릭하면 원본 라이트박스 */}
         <button
           type="button"
@@ -164,7 +168,7 @@ function StudyRoomCarousel({ images }: { images: string[] }) {
           src={images[idx]}
           alt={`자습실 ${idx + 1}`}
           fill
-          className="object-cover"
+          className="object-contain"
           sizes="(max-width: 1024px) 100vw, 50vw"
           priority={idx === 0}
         />
@@ -349,38 +353,38 @@ export default function Home() {
           </div>
 
           <div className="mt-14">
-            {/* 1) 자습실 (정방향: 텍스트-이미지) */}
+            {/* 1) 자습실 (텍스트 위 + 이미지 아래) */}
             <section className="py-14 sm:py-20">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
-                <div className="pt-1 order-1">
-                  <h3 className="text-2xl sm:text-3xl font-semibold tracking-tight text-zinc-900">
-                    자습실
-                  </h3>
-                  <p className="mt-4 text-base sm:text-lg leading-8 text-zinc-700 max-w-xl">
-                    하루 학습량이 흔들리지 않도록, 집중을 끊지 않는 개인
-                    좌석·동선으로 설계합니다.
-                  </p>
+              {/* 텍스트 */}
+              <div className="max-w-3xl">
+                <h3 className="text-2xl sm:text-3xl font-semibold tracking-tight text-zinc-900">
+                  자습실
+                </h3>
+                <p className="mt-4 text-base sm:text-lg leading-8 text-zinc-700">
+                  하루 학습량이 흔들리지 않도록, 집중을 끊지 않는 개인
+                  좌석·동선으로 설계합니다.
+                </p>
 
-                  <div className="mt-7 flex flex-wrap gap-3">
-                    <Link
-                      href="/dormitory"
-                      className="rounded-xl bg-zinc-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800"
-                    >
-                      관리 시스템 보기
-                    </Link>
-                    <Link
-                      href="/contact"
-                      className="rounded-xl border border-zinc-300 px-5 py-3 text-sm font-medium hover:bg-zinc-50"
-                    >
-                      상담 신청
-                    </Link>
-                  </div>
+                <div className="mt-7 flex flex-wrap gap-3">
+                  <Link
+                    href="/dormitory"
+                    className="rounded-xl bg-zinc-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-zinc-800"
+                  >
+                    관리 시스템 보기
+                  </Link>
+                  <Link
+                    href="/contact"
+                    className="rounded-xl border border-zinc-300 px-5 py-3 text-sm font-medium hover:bg-zinc-50"
+                  >
+                    상담 신청
+                  </Link>
                 </div>
+              </div>
 
-                <div className="relative min-h-[340px] sm:min-h-[520px] order-2">
-                  <div className="overflow-hidden rounded-2xl">
-                    <StudyRoomCarousel images={studyImages} />
-                  </div>
+              {/* 이미지(아래) - 섹션감 있는 연한 배경 */}
+              <div className="mt-10 sm:mt-12 rounded-3xl bg-zinc-50/70 p-4 sm:p-6 ring-1 ring-zinc-200/70">
+                <div className="overflow-hidden rounded-2xl">
+                  <StudyRoomCarousel images={studyImages} />
                 </div>
               </div>
 
@@ -388,6 +392,7 @@ export default function Home() {
                 <Divider />
               </div>
             </section>
+
             {/* 2) 학과 강의실 (반전: 이미지-텍스트) */}
             <section className="py-16 sm:py-24 bg-zinc-50/60">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
