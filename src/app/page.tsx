@@ -210,6 +210,38 @@ function StickyMiniCTA() {
   );
 }
 
+function Reveal({
+  children,
+  delay = 0,
+  y = 12,
+  rootMargin,
+}: {
+  children: React.ReactNode;
+  delay?: number;
+  y?: number;
+  rootMargin?: string;
+}) {
+  const { ref, inView } = useInViewOnce<HTMLDivElement>(
+    rootMargin ?? "-10% 0px -10% 0px"
+  );
+
+  return (
+    <div
+      ref={ref}
+      className={[
+        "transition-all duration-700 will-change-transform",
+        inView ? "opacity-100 translate-y-0" : "opacity-0",
+      ].join(" ")}
+      style={{
+        transform: inView ? "translateY(0px)" : `translateY(${y}px)`,
+        transitionDelay: `${delay}ms`,
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
 export default function Home() {
   const [singleOpen, setSingleOpen] = useState(false);
   const [singleSrc, setSingleSrc] = useState<string | null>(null);
@@ -282,368 +314,278 @@ export default function Home() {
         <Divider />
 
         {/* ✅ WHY: 텍스트 압축 + FAQ 아코디언 */}
-        <section className="py-14 sm:py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch">
-            {/* Left */}
-            <div className="lg:col-span-6 flex flex-col justify-between">
-              <div>
-                <p className="text-xs font-semibold tracking-wider text-zinc-500">
-                  ADMISSION LOGIC
-                </p>
-
-                <h2 className="mt-3 text-3xl sm:text-4xl font-semibold tracking-tight text-zinc-900">
-                  미대 입시는
-                  <br className="hidden sm:block" />
-                  실기가 아니라,{" "}
-                  <span className="relative inline-block">
-                    <span className="bg-gradient-to-r from-zinc-900 to-zinc-600 bg-clip-text text-transparent">
-                      성적에서
-                    </span>
-                    <span className="absolute -bottom-1 left-0 h-[6px] w-full rounded-full bg-zinc-900/10" />
-                  </span>{" "}
-                  먼저 갈립니다.
-                </h2>
-
-                {/* ✅ 문단 대신 “핵심 3줄” */}
-                <div className="mt-6 space-y-2 text-base sm:text-lg leading-8 text-zinc-700">
-                  <p>
-                    실기 점수는{" "}
-                    <span className="font-semibold text-zinc-900">
-                      대부분 비슷
-                    </span>
-                    합니다.
+        <Reveal>
+          <section className="py-14 sm:py-20">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch">
+              {/* Left */}
+              <div className="lg:col-span-6 flex flex-col justify-between">
+                <div>
+                  <p className="text-xs font-semibold tracking-wider text-zinc-500">
+                    ADMISSION LOGIC
                   </p>
-                  <p>
-                    차이는{" "}
-                    <span className="font-semibold text-zinc-900">
-                      “지원 가능한 대학 범위”
-                    </span>
-                    에서 먼저 납니다.
-                  </p>
-                  <p>
-                    그래서{" "}
-                    <span className="font-semibold text-zinc-900">
-                      성적을 기준으로
+
+                  <h2 className="mt-3 text-3xl sm:text-4xl font-semibold tracking-tight text-zinc-900">
+                    미대 입시는 실기가 아니라,
+                    <br className="hidden sm:block" />
+                    <span className="relative inline-block">
+                      <span className="bg-gradient-to-r from-zinc-900 to-zinc-600 bg-clip-text text-transparent">
+                        성적에서
+                      </span>
+                      <span className="absolute -bottom-1 left-0 h-[6px] w-full rounded-full bg-zinc-900/10" />
                     </span>{" "}
-                    합격 구조를 설계합니다.
-                  </p>
+                    먼저 갈립니다.
+                  </h2>
+
+                  {/* ✅ 문단 대신 “핵심 3줄” */}
+                  <div className="mt-6 space-y-2 text-base sm:text-lg leading-8 text-zinc-700">
+                    <p>
+                      실기 점수는{" "}
+                      <span className="font-semibold text-zinc-900">
+                        대부분 비슷
+                      </span>
+                      합니다.
+                    </p>
+                    <p>
+                      차이는{" "}
+                      <span className="font-semibold text-zinc-900">
+                        “지원 가능한 대학 범위”
+                      </span>
+                      에서 먼저 납니다.
+                    </p>
+                    <p>
+                      그래서{" "}
+                      <span className="font-semibold text-zinc-900">
+                        성적을 기준으로
+                      </span>{" "}
+                      합격 구조를 설계합니다.
+                    </p>
+                  </div>
                 </div>
 
-                {/* ✅ 구조 카드: 설명 한 줄로 축약 */}
-                <div className="mt-10 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm shadow-zinc-900/5">
-                  <div className="flex items-center justify-between gap-4">
+                {/* CTA */}
+                <div className="mt-10 flex flex-wrap gap-3">
+                  <Link
+                    href="/system"
+                    className="group rounded-xl bg-zinc-900 px-5 py-3 text-sm font-semibold text-white shadow-sm transition
+                     hover:bg-zinc-800 hover:-translate-y-[1px] active:translate-y-0"
+                  >
+                    내 성적으로 가능한 대학 확인하기{" "}
+                    <span className="inline-block transition-transform group-hover:translate-x-0.5">
+                      →
+                    </span>
+                  </Link>
+
+                  <Link
+                    href="/strategy"
+                    className="rounded-xl border border-zinc-300 bg-white px-5 py-3 text-sm font-medium text-zinc-900 transition
+                     hover:bg-zinc-50 hover:-translate-y-[1px] active:translate-y-0"
+                  >
+                    합격 구조 더 보기
+                  </Link>
+                </div>
+              </div>
+
+              {/* Right: ✅ 합격 구조 3단계 (세로 나열) */}
+              <div className="lg:col-span-6">
+                <div className="h-full rounded-3xl border border-zinc-200 bg-white p-6 sm:p-7 shadow-sm shadow-zinc-900/5">
+                  <div className="flex items-center justify-between">
                     <p className="text-sm font-semibold text-zinc-900">
                       합격 구조 (3단계)
                     </p>
-                    <span className="rounded-full bg-zinc-50 px-2.5 py-1 text-xs font-medium text-zinc-600 ring-1 ring-zinc-200/70">
-                      한눈에
-                    </span>
+                    <p className="text-xs text-zinc-500">순서대로 진행됩니다</p>
                   </div>
 
-                  <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="mt-6 flex flex-col gap-4">
                     {[
                       {
                         step: "STEP 1",
-                        title: "성적(수능·학과)",
-                        desc: "대학 범위를 먼저 확정",
+                        title: "성적(수능·학과)로 지원 범위 확정",
+                        desc: "가능 대학을 먼저 정리합니다.\n여기서 합격권이 결정됩니다.",
                       },
                       {
                         step: "STEP 2",
-                        title: "서류/면접(전형)",
-                        desc: "대학별 전략 적용",
+                        title: "서류/면접(전형) 전략 적용",
+                        desc: "대학·학과별 요구를 맞춥니다.\n서류/면접에서 변별이 생깁니다.",
                       },
                       {
                         step: "STEP 3",
-                        title: "실기(최종 점수)",
-                        desc: "마지막 완성",
+                        title: "실기(최종 점수)로 마무리",
+                        desc: "마지막 점수를 완성합니다.\n실기는 ‘뒤집기’가 아니라 ‘완성’입니다.",
                       },
-                    ].map((x) => (
-                      <div
-                        key={x.step}
-                        className="rounded-xl bg-zinc-50 p-4 ring-1 ring-zinc-200/70"
-                      >
-                        <p className="text-xs font-semibold text-zinc-500">
-                          {x.step}
-                        </p>
-                        <p className="mt-1 text-sm font-semibold text-zinc-900">
-                          {x.title}
-                        </p>
-                        <p className="mt-2 text-xs leading-5 text-zinc-600">
-                          {x.desc}
-                        </p>
-                      </div>
+                    ].map((s, idx) => (
+                      <Reveal key={s.step} delay={idx * 80}>
+                        <div className="relative">
+                          {/* 흐름선 (마지막 제외) */}
+                          {idx < 2 && (
+                            <div className="absolute left-4 top-full h-6 w-px bg-zinc-200" />
+                          )}
+
+                          <div
+                            className="rounded-3xl bg-zinc-50 p-5 ring-1 ring-zinc-200/70 transition
+                         hover:-translate-y-[2px] hover:shadow-md hover:shadow-zinc-900/5"
+                          >
+                            <div className="flex items-start gap-4">
+                              <div className="mt-0.5 rounded-full bg-white px-3 py-1 text-xs font-semibold text-zinc-700 ring-1 ring-zinc-200/70">
+                                {s.step}
+                              </div>
+
+                              <div className="min-w-0">
+                                <p className="text-base font-semibold text-zinc-900">
+                                  {s.title}
+                                </p>
+
+                                <p className="mt-2 text-sm leading-6 text-zinc-700 whitespace-pre-line">
+                                  {s.desc}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </Reveal>
                     ))}
                   </div>
 
-                  <div className="mt-4 flex items-center gap-3">
-                    <div className="h-2 w-2 rounded-full bg-zinc-900" />
-                    <p className="text-xs sm:text-sm text-zinc-700">
-                      “가능 대학”부터 정리하면 전략이 빨라집니다.
+                  <div className="mt-6 border-t border-zinc-200 pt-6">
+                    <p className="text-xs text-zinc-600">
+                      * 목표 대학/전형에 따라 STEP 2의 비중과 준비 방식이
+                      달라집니다.
                     </p>
                   </div>
                 </div>
               </div>
-
-              {/* CTA */}
-              <div className="mt-10 flex flex-wrap gap-3">
-                <Link
-                  href="/system"
-                  className="group rounded-xl bg-zinc-900 px-5 py-3 text-sm font-semibold text-white shadow-sm transition
-                     hover:bg-zinc-800 hover:-translate-y-[1px] active:translate-y-0"
-                >
-                  내 성적으로 가능한 대학 확인하기{" "}
-                  <span className="inline-block transition-transform group-hover:translate-x-0.5">
-                    →
-                  </span>
-                </Link>
-
-                <Link
-                  href="/strategy"
-                  className="rounded-xl border border-zinc-300 bg-white px-5 py-3 text-sm font-medium text-zinc-900 transition
-                     hover:bg-zinc-50 hover:-translate-y-[1px] active:translate-y-0"
-                >
-                  합격 구조 더 보기
-                </Link>
-              </div>
             </div>
-
-            {/* Right: ✅ 오해 3가지 = 아코디언(접기/펼치기) */}
-            <div className="lg:col-span-6">
-              <div className="h-full rounded-3xl border border-zinc-200 bg-white p-6 sm:p-7 shadow-sm shadow-zinc-900/5">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm font-semibold text-zinc-900">
-                    자주 하는 오해 3가지
-                  </p>
-                  <p className="text-xs text-zinc-500">클릭해서 펼치기</p>
-                </div>
-
-                <div className="mt-6 space-y-3">
-                  {[
-                    {
-                      tag: "오해 1",
-                      q: "실기만 잘하면 되지 않나요?",
-                      a: "실기 점수는 비슷하게 모입니다. 먼저 성적 기준선(지원 범위)이 결정됩니다.",
-                    },
-                    {
-                      tag: "오해 2",
-                      q: "학과는 실기랑 연결되는 거 아닌가요?",
-                      a: "학과와 실기는 별개입니다. 학과로 합격권을 만들고, 실기로 완성합니다.",
-                    },
-                    {
-                      tag: "오해 3",
-                      q: "좋은 분위기가 성적을 올려주나요?",
-                      a: "분위기는 유지가 어렵습니다. 저희는 관리 시스템으로 루틴이 깨지기 전에 개입합니다.",
-                    },
-                  ].map((x) => (
-                    <details
-                      key={x.tag}
-                      className="group rounded-2xl bg-zinc-50 ring-1 ring-zinc-200/70 transition
-                         open:bg-white open:shadow-md open:shadow-zinc-900/5"
-                    >
-                      <summary className="cursor-pointer list-none p-5">
-                        <div className="flex items-center justify-between gap-4">
-                          <div>
-                            <p className="text-xs font-semibold text-zinc-500">
-                              {x.tag}
-                            </p>
-                            <p className="mt-1 text-base font-semibold text-zinc-900">
-                              “{x.q}”
-                            </p>
-                          </div>
-                          <span className="text-zinc-400 transition group-open:rotate-180">
-                            ▾
-                          </span>
-                        </div>
-                      </summary>
-                      <div className="px-5 pb-5 -mt-2">
-                        <p className="text-sm leading-6 text-zinc-700">{x.a}</p>
-                      </div>
-                    </details>
-                  ))}
-                </div>
-
-                <div className="mt-6 border-t border-zinc-200 pt-6">
-                  <p className="text-xs text-zinc-600">
-                    * 목표 대학/전형에 따라 기준선과 전략은 달라집니다.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+          </section>
+        </Reveal>
 
         <Divider />
 
         {/* ✅ SYSTEM (텍스트 압축 + 시원하게) */}
-        <section className="py-14 sm:py-20">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch">
-            {/* Left */}
-            <div className="lg:col-span-5 flex flex-col justify-between">
-              <div>
-                <p className="text-xs font-semibold tracking-wider text-zinc-500">
-                  SYSTEM
-                </p>
+        <Reveal delay={80}>
+          <section className="py-14 sm:py-20">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-stretch">
+              {/* Left */}
+              <div className="lg:col-span-5 flex flex-col justify-between">
+                <div>
+                  <p className="text-xs font-semibold tracking-wider text-zinc-500">
+                    SYSTEM
+                  </p>
 
-                <h2 className="mt-3 text-3xl sm:text-4xl font-semibold tracking-tight text-zinc-900">
-                  공부는 시키는 게 아니라,
-                  <br className="hidden sm:block" />
-                  <span className="relative inline-block">
-                    <span className="bg-gradient-to-r from-zinc-900 to-zinc-600 bg-clip-text text-transparent">
-                      흐트러지지 않게
+                  <h2 className="mt-3 text-3xl sm:text-4xl font-semibold tracking-tight text-zinc-900">
+                    공부는 시키는 게 아니라,
+                    <br className="hidden sm:block" />
+                    <span className="relative inline-block">
+                      <span className="bg-gradient-to-r from-zinc-900 to-zinc-600 bg-clip-text text-transparent">
+                        흐트러지지 않게
+                      </span>
+                      <span className="absolute -bottom-1 left-0 h-[6px] w-full rounded-full bg-zinc-900/10" />
                     </span>
-                    <span className="absolute -bottom-1 left-0 h-[6px] w-full rounded-full bg-zinc-900/10" />
-                  </span>{" "}
-                  설계합니다.
-                </h2>
+                    <br className="hidden sm:block" />
+                    설계합니다.
+                  </h2>
 
-                {/* ✅ 긴 문단 제거 → 핵심 3줄 */}
-                <div className="mt-6 space-y-2 text-base sm:text-lg leading-8 text-zinc-700">
-                  <p>
-                    성적은{" "}
-                    <span className="font-semibold text-zinc-900">수업</span>
-                    만으로 오르지 않습니다.
-                  </p>
-                  <p>
-                    <span className="font-semibold text-zinc-900">루틴</span>이
-                    유지될 때 점수가 쌓입니다.
-                  </p>
-                  <p>
-                    우리는{" "}
-                    <span className="font-semibold text-zinc-900">
-                      관리로 루틴을 고정
-                    </span>
-                    합니다.
-                  </p>
-                </div>
-
-                {/* ✅ 관리 메커니즘: 길게 설명 X, “칩”으로 */}
-                <div className="mt-10 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm shadow-zinc-900/5">
-                  <div className="flex items-center justify-between gap-4">
-                    <p className="text-sm font-semibold text-zinc-900">
-                      관리가 결과로 이어지는 방식
+                  {/* ✅ 긴 문단 제거 → 핵심 3줄 */}
+                  <div className="mt-6 space-y-2 text-base sm:text-lg leading-8 text-zinc-700">
+                    <p>
+                      성적은{" "}
+                      <span className="font-semibold text-zinc-900">수업</span>
+                      만으로 오르지 않습니다.
                     </p>
-                    <span className="rounded-full bg-zinc-50 px-2.5 py-1 text-xs font-medium text-zinc-600 ring-1 ring-zinc-200/70">
-                      요약
-                    </span>
-                  </div>
-
-                  {/* ✅ 3칩: 한눈에 */}
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    <span className="rounded-full bg-zinc-50 px-3 py-1 text-xs font-medium text-zinc-700 ring-1 ring-zinc-200/70">
-                      출결/자습 체크
-                    </span>
-                    <span className="rounded-full bg-zinc-50 px-3 py-1 text-xs font-medium text-zinc-700 ring-1 ring-zinc-200/70">
-                      과목 우선순위 조정
-                    </span>
-                    <span className="rounded-full bg-zinc-50 px-3 py-1 text-xs font-medium text-zinc-700 ring-1 ring-zinc-200/70">
-                      리포트 기반 피드백
-                    </span>
-                  </div>
-
-                  <div className="mt-4 flex items-center gap-3">
-                    <div className="h-2 w-2 rounded-full bg-zinc-900" />
-                    <p className="text-xs sm:text-sm text-zinc-700">
-                      끊기는 지점을 먼저 막으면, 점수는 안정적으로 올라갑니다.
+                    <p>
+                      <span className="font-semibold text-zinc-900">루틴</span>
+                      이 유지될 때 점수가 쌓입니다.
+                    </p>
+                    <p>
+                      우리는{" "}
+                      <span className="font-semibold text-zinc-900">
+                        관리로 루틴을 고정
+                      </span>
+                      합니다.
                     </p>
                   </div>
                 </div>
-              </div>
 
-              {/* CTA */}
-              <div className="mt-10 flex flex-wrap gap-3">
-                <Link
-                  href="/system"
-                  className="group rounded-xl bg-zinc-900 px-5 py-3 text-sm font-semibold text-white shadow-sm transition
+                {/* CTA */}
+                <div className="mt-10 flex flex-wrap gap-3">
+                  <Link
+                    href="/system"
+                    className="group rounded-xl bg-zinc-900 px-5 py-3 text-sm font-semibold text-white shadow-sm transition
                      hover:bg-zinc-800 hover:-translate-y-[1px] active:translate-y-0"
-                >
-                  관리 시스템 자세히 보기{" "}
-                  <span className="inline-block transition-transform group-hover:translate-x-0.5">
-                    →
-                  </span>
-                </Link>
+                  >
+                    관리 시스템 자세히 보기{" "}
+                    <span className="inline-block transition-transform group-hover:translate-x-0.5">
+                      →
+                    </span>
+                  </Link>
 
-                <Link
-                  href="/contact"
-                  className="rounded-xl border border-zinc-300 bg-white px-5 py-3 text-sm font-medium text-zinc-900 transition
+                  <Link
+                    href="/contact"
+                    className="rounded-xl border border-zinc-300 bg-white px-5 py-3 text-sm font-medium text-zinc-900 transition
                      hover:bg-zinc-50 hover:-translate-y-[1px] active:translate-y-0"
-                >
-                  상담 신청하기
-                </Link>
+                  >
+                    상담 신청하기
+                  </Link>
+                </div>
               </div>
-            </div>
 
-            {/* Right: 세로 흐름 카드 (STEP 제거 버전) */}
-            <div className="lg:col-span-7">
-              <div className="flex flex-col gap-4">
-                {[
-                  {
-                    label: "CURRICULUM",
-                    title: "성적 기반 수업 설계",
-                    desc: "현재 성적 → 목표 대학을 역산합니다.\n올릴 점수부터 먼저 잡습니다.",
-                    items: ["국어·영어·탐구 클리닉", "실전형 풀이 + 시간 관리"],
-                  },
-                  {
-                    label: "ROUTINE",
-                    title: "일상 루틴 관리",
-                    desc: "점수는 루틴이 무너지면 내려갑니다.\n깨지기 전에 바로 조정합니다.",
-                    items: ["출결/자습 리듬 체크", "복습 흐름 유지 설계"],
-                  },
-                  {
-                    label: "FEEDBACK",
-                    title: "리포트 기반 피드백",
-                    desc: "감이 아니라 데이터로 봅니다.\n약점을 찾아 반복 교정합니다.",
-                    items: [
-                      "정기 상담 + 성적 리포트",
-                      "대학/전형 일정·전략 조율",
-                    ],
-                  },
-                ].map((c, idx) => (
-                  <div key={c.label} className="relative">
-                    {/* 흐름선 (마지막 카드 제외) */}
-                    {idx < 2 && (
-                      <div className="absolute left-6 top-full h-6 w-px bg-zinc-200" />
-                    )}
+              {/* Right: 세로 흐름 카드 (STEP 제거 버전) */}
+              <div className="lg:col-span-7">
+                <div className="flex flex-col gap-4">
+                  {[
+                    {
+                      label: "CURRICULUM",
+                      title: "성적 기반 수업 설계",
+                      desc: "현재 성적 → 목표 대학을 역산합니다.\n올릴 점수부터 먼저 잡습니다.",
+                    },
+                    {
+                      label: "ROUTINE",
+                      title: "일상 루틴 관리",
+                      desc: "점수는 루틴이 무너지면 내려갑니다.\n깨지기 전에 바로 조정합니다.",
+                    },
+                    {
+                      label: "FEEDBACK",
+                      title: "리포트 기반 피드백",
+                      desc: "감이 아니라 데이터로 봅니다.\n약점을 찾아 반복 교정합니다.",
+                    },
+                  ].map((c, idx) => (
+                    <Reveal key={c.label} delay={idx * 80}>
+                      <div key={c.label} className="relative">
+                        {/* 흐름선 (마지막 카드 제외) */}
+                        {idx < 2 && (
+                          <div className="absolute left-6 top-full h-6 w-px bg-zinc-200" />
+                        )}
 
-                    <div
-                      className="rounded-3xl border border-zinc-200 bg-white p-6
+                        <div
+                          className="rounded-3xl border border-zinc-200 bg-white p-6
                      shadow-sm shadow-zinc-900/5 transition
                      hover:-translate-y-[2px] hover:shadow-lg hover:shadow-zinc-900/10 hover:border-zinc-300"
-                    >
-                      {/* Label */}
-                      <p className="text-xs font-semibold tracking-wider text-zinc-500">
-                        {c.label}
-                      </p>
+                        >
+                          {/* Label */}
+                          <p className="text-xs font-semibold tracking-wider text-zinc-500">
+                            {c.label}
+                          </p>
 
-                      {/* Title */}
-                      <h3 className="mt-2 text-lg font-semibold text-zinc-900">
-                        {c.title}
-                      </h3>
+                          {/* Title */}
+                          <h3 className="mt-2 text-lg font-semibold text-zinc-900">
+                            {c.title}
+                          </h3>
 
-                      {/* Description (2줄 고정) */}
-                      <p className="mt-2 text-sm leading-6 text-zinc-700 whitespace-pre-line">
-                        {c.desc}
-                      </p>
-
-                      {/* Bullets */}
-                      <ul className="mt-4 space-y-2 text-sm text-zinc-700">
-                        {c.items.map((it) => (
-                          <li key={it} className="flex gap-2">
-                            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-zinc-900" />
-                            {it}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                ))}
+                          {/* Description (2줄 고정) */}
+                          <p className="mt-2 text-sm leading-6 text-zinc-700 whitespace-pre-line">
+                            {c.desc}
+                          </p>
+                        </div>
+                      </div>
+                    </Reveal>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </Reveal>
       </Container>
 
       {/* 시설은 신뢰 보조재로 뒤에 */}
-      <section className="pb-24 pt-10 sm:pt-14">
+      <section id="facility" className="pb-24 pt-10 sm:pt-14">
         <Divider />
 
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -1093,6 +1035,7 @@ export default function Home() {
           onClose={() => setSingleOpen(false)}
         />
       </section>
+      <StickyMiniCTA />
     </PageShell>
   );
 }
