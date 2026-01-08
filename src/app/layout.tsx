@@ -1,6 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Noto_Sans_KR } from "next/font/google";
+import Script from "next/script";
 
 const noto = Noto_Sans_KR({
   subsets: ["latin"],
@@ -20,6 +21,23 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
+      <head>
+        {" "}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=G-X90SVQPM9Q`}
+          strategy="afterInteractive"
+        />
+        <Script id="ga-init" strategy="afterInteractive">
+          {`
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-X90SVQPM9Q', {
+      page_path: window.location.pathname,
+    });
+  `}
+        </Script>
+      </head>
       <body className={`${noto.className} bg-white text-zinc-900`}>
         {children}
       </body>
