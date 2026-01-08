@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 const nav = [
@@ -41,6 +42,7 @@ function IconX({ className = "" }: { className?: string }) {
 }
 
 export default function SiteHeader() {
+  const pathname = usePathname(); // ✅ 현재 경로
   const [open, setOpen] = useState(false);
   const panelRef = useRef<HTMLDivElement | null>(null);
 
@@ -71,12 +73,25 @@ export default function SiteHeader() {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden items-center gap-4 text-sm text-zinc-700 md:flex">
-            {nav.map((x) => (
-              <Link key={x.href} href={x.href} className="hover:text-zinc-900">
-                {x.label}
-              </Link>
-            ))}
+          <nav className="hidden items-center gap-4 text-sm md:flex">
+            {nav.map((x) => {
+              const active = pathname === x.href;
+
+              return (
+                <Link
+                  key={x.href}
+                  href={x.href}
+                  className={`rounded-md px-2 py-1 transition
+          ${
+            active
+              ? "bg-zinc-900 text-white"
+              : "text-zinc-700 hover:text-zinc-900"
+          }`}
+                >
+                  {x.label}
+                </Link>
+              );
+            })}
           </nav>
 
           <div className="flex items-center gap-2">
