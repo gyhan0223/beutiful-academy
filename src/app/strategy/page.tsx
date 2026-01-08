@@ -8,7 +8,7 @@ export default function StrategyPage() {
   return (
     <PageShell>
       {/* Hero Section */}
-      <div className="bg-hero-pattern bg-cover bg-center py-16">
+      <div className="bg-zinc-50 py-16">
         <Container>
           <header className="text-center mb-12">
             <h1 className="text-4xl font-bold tracking-tight text-zinc-900">

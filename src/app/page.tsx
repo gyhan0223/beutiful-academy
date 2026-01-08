@@ -131,11 +131,14 @@ function Lightbox({
 }
 
 function useInViewOnce<T extends HTMLElement>(
-  rootMargin = "-10% 0px -10% 0px"
+  rootMargin = "-10% 0px -10% 0px",
+  enabled = true,
+  threshold = 0.12
 ) {
   const [inView, setInView] = useState(false);
+
   const ref = (node: T | null) => {
-    if (!node || inView) return;
+    if (!node || inView || !enabled) return;
 
     const io = new IntersectionObserver(
       (entries) => {
@@ -144,7 +147,7 @@ function useInViewOnce<T extends HTMLElement>(
           io.disconnect();
         }
       },
-      { rootMargin, threshold: 0.12 }
+      { rootMargin, threshold }
     );
 
     io.observe(node);
@@ -176,7 +179,7 @@ function StickyMiniCTA() {
     <div
       className={[
         "fixed bottom-5 left-1/2 z-[60] -translate-x-1/2",
-        "transition-all duration-500",
+        "transition-all duration-700",
         hide
           ? "opacity-0 translate-y-4 pointer-events-none"
           : "opacity-100 translate-y-0",
@@ -215,14 +218,18 @@ function Reveal({
   delay = 0,
   y = 12,
   rootMargin,
+  enabled = true,
 }: {
   children: React.ReactNode;
   delay?: number;
   y?: number;
   rootMargin?: string;
+  enabled?: boolean;
 }) {
   const { ref, inView } = useInViewOnce<HTMLDivElement>(
-    rootMargin ?? "-10% 0px -10% 0px"
+    rootMargin ?? "-10% 0px -10% 0px",
+    enabled,
+    0.12
   );
 
   return (
@@ -245,6 +252,41 @@ function Reveal({
 export default function Home() {
   const [singleOpen, setSingleOpen] = useState(false);
   const [singleSrc, setSingleSrc] = useState<string | null>(null);
+  const [startSteps, setStartSteps] = useState(false);
+  const [startSystemCards, setStartSystemCards] = useState(false);
+
+  const stepsBoxRef = (node: HTMLDivElement | null) => {
+    if (!node || startSteps) return;
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        // ✅ 박스가 화면에 "온전히" 들어온 뒤에만 시작
+        if (entry.isIntersecting) {
+          setStartSteps(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.95 }
+    );
+
+    io.observe(node);
+  };
+
+  const systemCardsRef = (node: HTMLDivElement | null) => {
+    if (!node || startSystemCards) return;
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setStartSystemCards(true);
+          io.disconnect();
+        }
+      },
+      { threshold: 0.95 }
+    );
+
+    io.observe(node);
+  };
 
   const openSingle = (src: string) => {
     setSingleSrc(src);
@@ -281,13 +323,15 @@ export default function Home() {
               실기 점수는 비슷한데,
               <br />
               <span className="font-semibold text-zinc-900">
-                수능·학과에서 이미 탈락이 결정되는 구조
+                수능·내신 성적에서 이미 탈락이 결정되는 구조
               </span>
               를 아시나요?
               <br />
               <br />
-              국어 · 영어 · 탐구 · 관리까지. 서울대·홍대·국민대·이대 등 최상위권
-              미대 전형을 기준으로 합격 구조를 설계합니다.
+              국어 · 영어 · 탐구 · 학사관리까지.
+              <br />
+              서울대·홍대·국민대·이대 등 최상위권 미대를 기준으로 합격 구조를
+              설계합니다.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
@@ -387,7 +431,10 @@ export default function Home() {
 
               {/* Right: ✅ 합격 구조 3단계 (세로 나열) */}
               <div className="lg:col-span-6">
-                <div className="h-full rounded-3xl border border-zinc-200 bg-white p-6 sm:p-7 shadow-sm shadow-zinc-900/5">
+                <div
+                  ref={stepsBoxRef}
+                  className="h-full rounded-3xl border border-zinc-200 bg-white p-6 sm:p-7 shadow-sm shadow-zinc-900/5"
+                >
                   <div className="flex items-center justify-between">
                     <p className="text-sm font-semibold text-zinc-900">
                       합격 구조 (3단계)
@@ -399,7 +446,7 @@ export default function Home() {
                     {[
                       {
                         step: "STEP 1",
-                        title: "성적(수능·학과)로 지원 범위 확정",
+                        title: "성적(수능·학과)으로 지원 범위 확정",
                         desc: "가능 대학을 먼저 정리합니다.\n여기서 합격권이 결정됩니다.",
                       },
                       {
@@ -413,7 +460,11 @@ export default function Home() {
                         desc: "마지막 점수를 완성합니다.\n실기는 ‘뒤집기’가 아니라 ‘완성’입니다.",
                       },
                     ].map((s, idx) => (
-                      <Reveal key={s.step} delay={idx * 80}>
+                      <Reveal
+                        key={s.step}
+                        delay={idx * 200}
+                        enabled={startSteps}
+                      >
                         <div className="relative">
                           {/* 흐름선 (마지막 제외) */}
                           {idx < 2 && (
@@ -492,10 +543,10 @@ export default function Home() {
                     </p>
                     <p>
                       <span className="font-semibold text-zinc-900">루틴</span>
-                      이 유지될 때 점수가 쌓입니다.
+                      이 유지될 때 실력이 쌓입니다.
                     </p>
                     <p>
-                      우리는{" "}
+                      저희는{" "}
                       <span className="font-semibold text-zinc-900">
                         관리로 루틴을 고정
                       </span>
@@ -528,18 +579,18 @@ export default function Home() {
               </div>
 
               {/* Right: 세로 흐름 카드 (STEP 제거 버전) */}
-              <div className="lg:col-span-7">
+              <div className="lg:col-span-7" ref={systemCardsRef}>
                 <div className="flex flex-col gap-4">
                   {[
                     {
                       label: "CURRICULUM",
                       title: "성적 기반 수업 설계",
-                      desc: "현재 성적 → 목표 대학을 역산합니다.\n올릴 점수부터 먼저 잡습니다.",
+                      desc: "막연히 올리지 않습니다.\n목표 대학 기준으로 필요한 점수만 올립니다.\n불필요한 공부는 하지 않습니다.",
                     },
                     {
                       label: "ROUTINE",
                       title: "일상 루틴 관리",
-                      desc: "점수는 루틴이 무너지면 내려갑니다.\n깨지기 전에 바로 조정합니다.",
+                      desc: "점수는 루틴이 무너지면 내려갑니다.\n체계적인 시스템으로\n깨지지 않게 조정합니다.",
                     },
                     {
                       label: "FEEDBACK",
@@ -547,7 +598,11 @@ export default function Home() {
                       desc: "감이 아니라 데이터로 봅니다.\n약점을 찾아 반복 교정합니다.",
                     },
                   ].map((c, idx) => (
-                    <Reveal key={c.label} delay={idx * 80}>
+                    <Reveal
+                      key={c.label}
+                      delay={idx * 200} // ✅ 원하는 속도로 조절
+                      enabled={startSystemCards} // ✅ 전체가 다 보인 뒤에만 시작
+                    >
                       <div key={c.label} className="relative">
                         {/* 흐름선 (마지막 카드 제외) */}
                         {idx < 2 && (
@@ -743,8 +798,7 @@ export default function Home() {
                   </div>
 
                   <p className="mt-4 text-xs sm:text-sm text-zinc-600">
-                    * 실제 수업 장면을 기준으로 “점수형 학습”에 맞춘 환경을
-                    구성합니다.
+                    * 점수를 만드는 수업, 그 흐름에 맞춘 환경을 설계합니다.
                   </p>
                 </div>
 
@@ -774,7 +828,7 @@ export default function Home() {
                           <span className="font-semibold">
                             실전형 수업 운영
                           </span>{" "}
-                          (문제 풀이·시간 관리 중심)
+                          (이론 · 문제 풀이 · 시간 관리 중심)
                         </p>
                       </div>
 
@@ -872,7 +926,7 @@ export default function Home() {
                         <div className="mt-1 h-2.5 w-2.5 rounded-full bg-zinc-900" />
                         <p className="text-sm sm:text-base text-zinc-800">
                           <span className="font-semibold">컨디션 체크</span>{" "}
-                          (무너지기 전에 조정)
+                          (무너지지 않게 지속 관리)
                         </p>
                       </div>
                     </div>
@@ -918,7 +972,8 @@ export default function Home() {
 
                   {/* 캡션은 이미지 아래 */}
                   <p className="mt-4 text-xs sm:text-sm text-zinc-600">
-                    * 컨디션이 무너지지 않게, 학습이 ‘지속’되도록 설계합니다.
+                    * 매일 다른 반찬으로 식단을 관리해 지치지 않고 공부가
+                    이어지도록 환경을 만듭니다.
                   </p>
                 </div>
               </div>
@@ -965,7 +1020,7 @@ export default function Home() {
                     </p>
 
                     <h3 className="mt-3 text-3xl sm:text-4xl font-semibold tracking-tight text-zinc-900">
-                      집중이 남게,
+                      집중만 남게,
                       <br className="hidden sm:block" />
                       변수를 줄인다.
                     </h3>
